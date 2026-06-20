@@ -162,70 +162,83 @@ export default function Formulaire({ systeme, setResultats, setOnglet }) {
       <h4 style={{ color: "#2E75B6", borderBottom: "1px solid #D6E4F0", paddingBottom: 4, marginTop: "1rem" }}>
         Antennes
       </h4>
-      <div style={champStyle}>
-        <label style={labelStyle}>Mode de saisie du gain</label>
-        <select style={selectStyle} value={modeAntenne} onChange={e => setModeAntenne(e.target.value)}>
-          <option value="manuel">Saisie manuelle du gain (dBi)</option>
-          <option value="calcul">Calculer depuis le diamètre (antenne parabolique)</option>
-          <option value="preset">Choisir un modèle d'antenne parabolique</option>
-        </select>
-      </div>
 
-      {modeAntenne === "manuel" && (
+      {systeme === "fso" ? (
         <>
-          <Champ label="Gain antenne TX (dBi)" name="tx_gain" value={antenne.tx_gain} onChange={handleAntenne} />
-          <Champ label="Gain antenne RX (dBi)" name="rx_gain" value={antenne.rx_gain} onChange={handleAntenne} />
-        </>
-      )}
-
-      {modeAntenne === "calcul" && (
-        <>
-          <div style={{ display: "flex", gap: "1rem" }}>
-            <div style={{ flex: 1 }}>
-              <Champ label="Diamètre antenne TX (m)" name="tx_diam" value={antenne.tx_diam} onChange={handleAntenne} min="0.1" step="0.1" />
-              {antenne.tx_gain && <p style={{ fontSize: "0.8rem", color: "#1E8449", marginTop: -10 }}>→ Gain TX ≈ {antenne.tx_gain} dBi</p>}
-            </div>
-            <div style={{ flex: 1 }}>
-              <Champ label="Diamètre antenne RX (m)" name="rx_diam" value={antenne.rx_diam} onChange={handleAntenne} min="0.1" step="0.1" />
-              {antenne.rx_gain && <p style={{ fontSize: "0.8rem", color: "#1E8449", marginTop: -10 }}>→ Gain RX ≈ {antenne.rx_gain} dBi</p>}
-            </div>
-          </div>
-          <p style={{ fontSize: "0.8rem", color: "#888", marginTop: -8 }}>
-            Formule : G = 10·log₁₀(η·(π·D·f/c)²), η=0.55
+          <p style={{ fontSize: "0.8rem", color: "#888", marginTop: -4, marginBottom: "0.8rem" }}>
+            En FSO, le gain est une caractéristique du télescope/lentille optique fournie par le constructeur (saisie directe en dBi).
           </p>
+          <Champ label="Gain TX optique (dBi)" name="tx_gain" value={antenne.tx_gain} onChange={handleAntenne} />
+          <Champ label="Gain RX optique (dBi)" name="rx_gain" value={antenne.rx_gain} onChange={handleAntenne} />
         </>
-      )}
-
-      {modeAntenne === "preset" && (
+      ) : (
         <>
-          <div style={{ display: "flex", gap: "1rem" }}>
-            <div style={{ flex: 1 }}>
-              <div style={champStyle}>
-                <label style={labelStyle}>Modèle antenne TX</label>
-                <select style={selectStyle} value={antenne.tx_modele} onChange={e => handleAntenneModele("tx", e.target.value)}>
-                  {ANTENNES.map(a => <option key={a.modele} value={a.modele}>{a.modele}</option>)}
-                </select>
-              </div>
-              {antenne.tx_modele === "Saisie manuelle" ? (
-                <Champ label="Gain antenne TX (dBi)" name="tx_gain" value={antenne.tx_gain} onChange={handleAntenne} />
-              ) : (
-                <p style={{ fontSize: "0.8rem", color: "#1E8449", marginTop: -10 }}>→ Gain TX ≈ {antenne.tx_gain} dBi</p>
-              )}
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={champStyle}>
-                <label style={labelStyle}>Modèle antenne RX</label>
-                <select style={selectStyle} value={antenne.rx_modele} onChange={e => handleAntenneModele("rx", e.target.value)}>
-                  {ANTENNES.map(a => <option key={a.modele} value={a.modele}>{a.modele}</option>)}
-                </select>
-              </div>
-              {antenne.rx_modele === "Saisie manuelle" ? (
-                <Champ label="Gain antenne RX (dBi)" name="rx_gain" value={antenne.rx_gain} onChange={handleAntenne} />
-              ) : (
-                <p style={{ fontSize: "0.8rem", color: "#1E8449", marginTop: -10 }}>→ Gain RX ≈ {antenne.rx_gain} dBi</p>
-              )}
-            </div>
+          <div style={champStyle}>
+            <label style={labelStyle}>Mode de saisie du gain</label>
+            <select style={selectStyle} value={modeAntenne} onChange={e => setModeAntenne(e.target.value)}>
+              <option value="manuel">Saisie manuelle du gain (dBi)</option>
+              <option value="calcul">Calculer depuis le diamètre (antenne parabolique)</option>
+              <option value="preset">Choisir un modèle d'antenne parabolique</option>
+            </select>
           </div>
+
+          {modeAntenne === "manuel" && (
+            <>
+              <Champ label="Gain antenne TX (dBi)" name="tx_gain" value={antenne.tx_gain} onChange={handleAntenne} />
+              <Champ label="Gain antenne RX (dBi)" name="rx_gain" value={antenne.rx_gain} onChange={handleAntenne} />
+            </>
+          )}
+
+          {modeAntenne === "calcul" && (
+            <>
+              <div style={{ display: "flex", gap: "1rem" }}>
+                <div style={{ flex: 1 }}>
+                  <Champ label="Diamètre antenne TX (m)" name="tx_diam" value={antenne.tx_diam} onChange={handleAntenne} min="0.1" step="0.1" />
+                  {antenne.tx_gain && <p style={{ fontSize: "0.8rem", color: "#1E8449", marginTop: -10 }}>→ Gain TX ≈ {antenne.tx_gain} dBi</p>}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <Champ label="Diamètre antenne RX (m)" name="rx_diam" value={antenne.rx_diam} onChange={handleAntenne} min="0.1" step="0.1" />
+                  {antenne.rx_gain && <p style={{ fontSize: "0.8rem", color: "#1E8449", marginTop: -10 }}>→ Gain RX ≈ {antenne.rx_gain} dBi</p>}
+                </div>
+              </div>
+              <p style={{ fontSize: "0.8rem", color: "#888", marginTop: -8 }}>
+                Formule : G = 10·log₁₀(η·(π·D·f/c)²), η=0.55
+              </p>
+            </>
+          )}
+
+          {modeAntenne === "preset" && (
+            <>
+              <div style={{ display: "flex", gap: "1rem" }}>
+                <div style={{ flex: 1 }}>
+                  <div style={champStyle}>
+                    <label style={labelStyle}>Modèle antenne TX</label>
+                    <select style={selectStyle} value={antenne.tx_modele} onChange={e => handleAntenneModele("tx", e.target.value)}>
+                      {ANTENNES.map(a => <option key={a.modele} value={a.modele}>{a.modele}</option>)}
+                    </select>
+                  </div>
+                  {antenne.tx_modele === "Saisie manuelle" ? (
+                    <Champ label="Gain antenne TX (dBi)" name="tx_gain" value={antenne.tx_gain} onChange={handleAntenne} />
+                  ) : (
+                    <p style={{ fontSize: "0.8rem", color: "#1E8449", marginTop: -10 }}>→ Gain TX ≈ {antenne.tx_gain} dBi</p>
+                  )}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={champStyle}>
+                    <label style={labelStyle}>Modèle antenne RX</label>
+                    <select style={selectStyle} value={antenne.rx_modele} onChange={e => handleAntenneModele("rx", e.target.value)}>
+                      {ANTENNES.map(a => <option key={a.modele} value={a.modele}>{a.modele}</option>)}
+                    </select>
+                  </div>
+                  {antenne.rx_modele === "Saisie manuelle" ? (
+                    <Champ label="Gain antenne RX (dBi)" name="rx_gain" value={antenne.rx_gain} onChange={handleAntenne} />
+                  ) : (
+                    <p style={{ fontSize: "0.8rem", color: "#1E8449", marginTop: -10 }}>→ Gain RX ≈ {antenne.rx_gain} dBi</p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </>
       )}
 
